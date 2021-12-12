@@ -41,6 +41,7 @@ var server = cli.Command{
 			CreateOffer: storage.NewCreateOfferService(db),
 			UpdateOffer: storage.NewUpdateOfferService(db),
 			GetOffer:    storage.NewGetOfferService(db),
+			DeleteOffer: storage.NewDeleteOfferService(db),
 		}, lg)
 
 		return r.Run(fmt.Sprintf(":%s", c.String("server-port")))

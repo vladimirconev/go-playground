@@ -17,7 +17,6 @@ func New(r *RouteHandlers, lg *zap.SugaredLogger) *gin.Engine {
 		lg.Infow(c.Request.RequestURI,
 			"header", c.Request.Header,
 			"host", c.Request.Host,
-			"body", c.Request.Body,
 			"method", c.Request.Method)
 	})
 	return r.routes(e)
@@ -27,6 +26,7 @@ type RouteHandlers struct {
 	CreateOffer storage.CreateOffer
 	UpdateOffer storage.UpdateOffer
 	GetOffer    storage.GetOffer
+	DeleteOffer storage.DeleteOffer
 }
 
 func (r *RouteHandlers) routes(e *gin.Engine) *gin.Engine {
@@ -40,8 +40,24 @@ func (r *RouteHandlers) routes(e *gin.Engine) *gin.Engine {
 	e.POST("/offers", create(r.CreateOffer))
 	e.PUT("/offers/:offerID", update(r.UpdateOffer))
 	e.GET("/offers/:offerID", get(r.GetOffer))
+	e.DELETE("/offers/:offerID", delete(r.DeleteOffer))
 
 	return e
+}
+
+func delete(do storage.DeleteOffer) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		defer c.Header("Content-Type", "application/json")
+		err := do.DeleteByID(c.Request.Context(), c.Param("offerID"))
+		if err != nil {
+			_ = c.AbortWithError(http.StatusInternalServerError, err)
+
+			return
+		}
+
+		c.Status(http.StatusOK)
+
+	}
 }
 
 func create(co storage.CreateOffer) gin.HandlerFunc {

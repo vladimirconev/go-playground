@@ -40,6 +40,10 @@ type UpdateOffer interface {
 	Update(context.Context, string, *api.UpdateJobOfferRequest) (*api.JobOfferResponse, error)
 }
 
+type DeleteOffer interface {
+	DeleteByID(context.Context, string) error
+}
+
 type dbService struct {
 	db *gorm.DB
 }
@@ -124,8 +128,19 @@ func (s *dbService) Update(ctx context.Context, offerID string, req *api.UpdateJ
 	}, nil
 }
 
+func (s *dbService) DeleteByID(ctx context.Context, offerID string) error {
+
+	return s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		return tx.Where("uuid = (?)", offerID).
+			Delete(&jobOffer{}).
+			Error
+	})
+}
+
 func NewCreateOfferService(db *gorm.DB) CreateOffer { return &dbService{db: db} }
 
 func NewUpdateOfferService(db *gorm.DB) UpdateOffer { return &dbService{db: db} }
 
 func NewGetOfferService(db *gorm.DB) GetOffer { return &dbService{db: db} }
+
+func NewDeleteOfferService(db *gorm.DB) DeleteOffer { return &dbService{db: db} }
