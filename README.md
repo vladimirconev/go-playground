@@ -1,5 +1,5 @@
 # go-playground
-simple CRUD app written in Go to explore and learn 
+simple CRUD app for <b> job offers</b> written in Go to explore the language and popular libraries. 
 
 <h3>Libraries </h3>
 
