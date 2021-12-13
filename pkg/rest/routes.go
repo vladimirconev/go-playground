@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func New(r *RouteHandlers, lg *zap.SugaredLogger) *gin.Engine {
+func SetupRouteHandlers(r *RouteHandlers, lg *zap.SugaredLogger) *gin.Engine {
 	e := gin.New()
 	e.Use(gin.Recovery())
 	e.Use(func(c *gin.Context) {

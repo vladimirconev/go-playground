@@ -35,7 +35,7 @@ func (p *PostgresConfig) Dialector() gorm.Dialector {
 	)
 }
 
-func Config(ctx context.Context, p *PostgresConfig, lg *zap.SugaredLogger) (*gorm.DB, error) {
+func SetupDatabase(ctx context.Context, p *PostgresConfig, lg *zap.SugaredLogger) (*gorm.DB, error) {
 	return gorm.Open(p.Dialector(), &gorm.Config{
 		Logger: logger.New(
 			zap.NewStdLog(lg.Desugar()),

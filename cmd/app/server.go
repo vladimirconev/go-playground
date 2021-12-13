@@ -20,8 +20,6 @@ var server = cli.Command{
 
 		lg := logger.Sugar()
 
-		lg.Info("starting app GOLANG Playground")
-
 		ctx := c.Context
 
 		postgresConfig := &storage.PostgresConfig{
@@ -32,12 +30,12 @@ var server = cli.Command{
 			Password:     c.String("postgres-password"),
 		}
 
-		db, err := storage.Config(ctx, postgresConfig, lg)
+		db, err := storage.SetupDatabase(ctx, postgresConfig, lg)
 		if err != nil {
 			return err
 		}
 
-		r := rest.New(&rest.RouteHandlers{
+		r := rest.SetupRouteHandlers(&rest.RouteHandlers{
 			CreateOffer: storage.NewCreateOfferService(db),
 			UpdateOffer: storage.NewUpdateOfferService(db),
 			GetOffer:    storage.NewGetOfferService(db),
@@ -52,6 +50,6 @@ var server = cli.Command{
 		&cli.StringFlag{EnvVars: []string{"POSTGRES_PORT"}, Name: "postgres-port", Value: "5432"},
 		&cli.StringFlag{EnvVars: []string{"POSTGRES_DB"}, Name: "postgres-db", Value: "offers_db"},
 		&cli.StringFlag{EnvVars: []string{"POSTGRES_USER"}, Name: "postgres-user", Value: "postgres"},
-		&cli.StringFlag{EnvVars: []string{"POSTGRES_PASSWORD"}, Name: "postgres-password", Value: "vladvlad"},
+		&cli.StringFlag{EnvVars: []string{"POSTGRES_PASSWORD"}, Name: "postgres-password", Value: "your_password"},
 	},
 }

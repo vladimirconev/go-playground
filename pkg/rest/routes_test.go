@@ -8,7 +8,7 @@ import (
 )
 
 func TestRoutes(t *testing.T) {
-	sut := New(&RouteHandlers{}, zaptest.NewLogger(t).Sugar())
+	sut := SetupRouteHandlers(&RouteHandlers{}, zaptest.NewLogger(t).Sugar())
 
 	routes := make(map[string][]string)
 	for _, r := range sut.Routes() {
