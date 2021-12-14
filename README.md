@@ -19,7 +19,9 @@ To create table in your preferred db  just copy content of https://github.com/vl
 Start server on default port 3456 by invoking:
 `go run cmd/main.go server`. <br/>
 
-Under `/docs` folder there is a Postman collection ready to be imported and start playing around.
+To override any of already pre-set variables: <br/>
+i.e. server port 8888 `go run cmd/main.go server --server-port "8888"`.
 
+Under `/docs` folder there is a Postman collection ready to be imported and start playing around.
 
 Happy Coding!!!
