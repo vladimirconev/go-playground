@@ -1,0 +1,102 @@
+{
+	"info": {
+		"_postman_id": "186d0189-f294-410e-94cd-5707352a44cd",
+		"name": "Job Offers API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "DELETE offer by UUID",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:3456/offers/cd8a6d49-10f2-46d4-9447-0887091e9f2e",
+					"host": [
+						"localhost"
+					],
+					"port": "3456",
+					"path": [
+						"offers",
+						"cd8a6d49-10f2-46d4-9447-0887091e9f2e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Job Offer",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test2.e@e-on.com\",\r\n    \"link\": \"http://test2.com\",\r\n    \"salary\": 6500.00,\r\n    \"phone\": \"+38978323177\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3456/offers/cd8a6d49-10f2-46d4-9447-0887091e9f2e",
+					"host": [
+						"localhost"
+					],
+					"port": "3456",
+					"path": [
+						"offers",
+						"cd8a6d49-10f2-46d4-9447-0887091e9f2e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Job Offer By UUID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3456/offers/cd8a6d49-10f2-46d4-9447-0887091e9f2e",
+					"host": [
+						"localhost"
+					],
+					"port": "3456",
+					"path": [
+						"offers",
+						"cd8a6d49-10f2-46d4-9447-0887091e9f2e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Job Offer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"Code Factory\",\r\n    \"email\": \"hr@code_factory.co\",\r\n    \"expiration_date\": \"2022-03-01 14:30:00.00000\",\r\n    \"link\": \"https://it.mk/job/code_factory-go-developer/\",\r\n    \"details\": \"we are looking for Golang developer...\",\r\n    \"salary\": 14500.00,\r\n    \"phone\": \"+38976344987\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3456/offers",
+					"host": [
+						"localhost"
+					],
+					"port": "3456",
+					"path": [
+						"offers"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -17,31 +17,9 @@ Make sure your PostgreSQL instance is up and running.
 To create table in your preferred db  just copy content of https://github.com/vladimirconev/go-playground/blob/main/setup_table.sql and execute. <br/>
 
 Start server on default port 3456 by invoking:
-`go run cmd/main.go server`.
+`go run cmd/main.go server`. <br/>
 
-<h3> Sample payloads </h3> 
-
-- POST localhost:3456/offers <br/>
-```json
-{
-    "company": "test_company",
-    "email": "test.e@e-on.com",
-    "expiration_date": "2021-05-25 17:27:43.48878",
-    "link": "http://test.com",
-    "details": "we are looking for Jr Python developer...",
-    "salary": 4500.00,
-    "phone": "+38978323177"
-}
-```
-- PUT localhost:3456/offers/:offerID <br/>
-```json
-{
-    "email": "test2.e@e-on.com",
-    "link": "http://test2.com",
-    "salary": 6500.00,
-    "phone": "+38978323177"
-}
-```
+Under `/docs` folder there is a Postman collection ready to be imported and start playing around.
 
 
 Happy Coding!!!

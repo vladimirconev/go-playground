@@ -20,8 +20,6 @@ var server = cli.Command{
 
 		lg := logger.Sugar()
 
-		ctx := c.Context
-
 		postgresConfig := &storage.PostgresConfig{
 			DatabaseName: c.String("postgres-db"),
 			Host:         c.String("postgres-host"),
@@ -30,7 +28,7 @@ var server = cli.Command{
 			Password:     c.String("postgres-password"),
 		}
 
-		db, err := storage.SetupDatabase(ctx, postgresConfig, lg)
+		db, err := storage.SetupDatabase(postgresConfig, lg)
 		if err != nil {
 			return err
 		}

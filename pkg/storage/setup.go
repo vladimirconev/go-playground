@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"context"
 	"fmt"
 
 	_ "github.com/lib/pq"
@@ -35,7 +34,7 @@ func (p *PostgresConfig) Dialector() gorm.Dialector {
 	)
 }
 
-func SetupDatabase(ctx context.Context, p *PostgresConfig, lg *zap.SugaredLogger) (*gorm.DB, error) {
+func SetupDatabase(p *PostgresConfig, lg *zap.SugaredLogger) (*gorm.DB, error) {
 	return gorm.Open(p.Dialector(), &gorm.Config{
 		Logger: logger.New(
 			zap.NewStdLog(lg.Desugar()),
