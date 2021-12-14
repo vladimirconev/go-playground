@@ -16,6 +16,7 @@ func SetupRouteHandlers(r *RouteHandlers, lg *zap.SugaredLogger) *gin.Engine {
 	e := gin.New()
 	e.Use(gin.Recovery())
 	e.Use(loggingMiddleware(lg))
+	e.SetTrustedProxies(nil)
 	return r.routes(e)
 }
 
