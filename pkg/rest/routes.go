@@ -1,6 +1,8 @@
 package rest
 
 import (
+	"bytes"
+	"io"
 	"net/http"
 
 	"example.com/playground/pkg/api"
@@ -13,13 +15,35 @@ import (
 func SetupRouteHandlers(r *RouteHandlers, lg *zap.SugaredLogger) *gin.Engine {
 	e := gin.New()
 	e.Use(gin.Recovery())
-	e.Use(func(c *gin.Context) {
+	e.Use(loggingMiddleware(lg))
+	return r.routes(e)
+}
+
+func loggingMiddleware(lg *zap.SugaredLogger) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var b []byte
+		if c.Request.Body != nil {
+			buf := new(bytes.Buffer)
+
+			if _, err := buf.ReadFrom(c.Request.Body); err != nil {
+				lg.Errorf("serialization error", "error", err)
+
+				return
+			}
+
+			b = buf.Bytes()
+
+			c.Request.Body = io.NopCloser(buf)
+		}
+
+		c.Next()
+
 		lg.Infow(c.Request.RequestURI,
 			"header", c.Request.Header,
 			"host", c.Request.Host,
-			"method", c.Request.Method)
-	})
-	return r.routes(e)
+			"method", c.Request.Method,
+			"body", string(b))
+	}
 }
 
 type RouteHandlers struct {
