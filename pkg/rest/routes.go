@@ -39,7 +39,8 @@ func loggingMiddleware(lg *zap.SugaredLogger) gin.HandlerFunc {
 
 		c.Next()
 
-		lg.Infow(c.Request.RequestURI,
+		lg.Infow("request",
+			"requestURI", c.Request.RequestURI,
 			"header", c.Request.Header,
 			"host", c.Request.Host,
 			"method", c.Request.Method,
@@ -64,16 +65,16 @@ func (r *RouteHandlers) routes(e *gin.Engine) *gin.Engine {
 
 	e.POST("/offers", create(r.CreateOffer))
 	e.PUT("/offers/:offerID", update(r.UpdateOffer))
-	e.GET("/offers/:offerID", get(r.GetOffer))
+	e.GET("/offers/:offerID", getByID(r.GetOffer))
 	e.DELETE("/offers/:offerID", delete(r.DeleteOffer))
 
 	return e
 }
 
-func delete(do storage.DeleteOffer) gin.HandlerFunc {
+func delete(d storage.DeleteOffer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer c.Header("Content-Type", "application/json")
-		err := do.DeleteByID(c.Request.Context(), c.Param("offerID"))
+		err := d.DeleteByID(c.Request.Context(), c.Param("offerID"))
 		if err != nil {
 			_ = c.AbortWithError(http.StatusInternalServerError, err)
 
@@ -85,14 +86,18 @@ func delete(do storage.DeleteOffer) gin.HandlerFunc {
 	}
 }
 
-func create(co storage.CreateOffer) gin.HandlerFunc {
+func create(cr storage.CreateOffer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer c.Header("Content-Type", "application/json")
 
 		var request api.JobOfferRequest
-		c.BindJSON(&request)
+		if err := c.BindJSON(&request); err != nil {
+			_ = c.AbortWithError(http.StatusBadRequest, err)
 
-		resp, err := co.Create(c.Request.Context(), &request)
+			return
+		}
+
+		resp, err := cr.Create(c.Request.Context(), &request)
 		if err != nil {
 			_ = c.AbortWithError(http.StatusInternalServerError, err)
 
@@ -103,14 +108,18 @@ func create(co storage.CreateOffer) gin.HandlerFunc {
 	}
 }
 
-func update(uo storage.UpdateOffer) gin.HandlerFunc {
+func update(u storage.UpdateOffer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer c.Header("Content-Type", "application/json")
 
 		var request api.UpdateJobOfferRequest
-		c.BindJSON(&request)
+		if err := c.BindJSON(&request); err != nil {
+			_ = c.AbortWithError(http.StatusBadRequest, err)
 
-		resp, err := uo.Update(c.Request.Context(), c.Param("offerID"), &request)
+			return
+		}
+
+		resp, err := u.Update(c.Request.Context(), c.Param("offerID"), &request)
 		if err != nil {
 			_ = c.AbortWithError(http.StatusInternalServerError, err)
 
@@ -121,7 +130,7 @@ func update(uo storage.UpdateOffer) gin.HandlerFunc {
 	}
 }
 
-func get(g storage.GetOffer) gin.HandlerFunc {
+func getByID(g storage.GetOffer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer c.Header("Content-Type", "application/json")
 
