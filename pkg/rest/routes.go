@@ -9,6 +9,8 @@ import (
 	"example.com/playground/pkg/storage"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-ozzo/ozzo-validation/is"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"go.uber.org/zap"
 )
 
@@ -74,7 +76,19 @@ func (r *RouteHandlers) routes(e *gin.Engine) *gin.Engine {
 func delete(d storage.DeleteOffer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer c.Header("Content-Type", "application/json")
-		err := d.DeleteByID(c.Request.Context(), c.Param("offerID"))
+
+		offerID := c.Param("offerID")
+
+		if err := validation.Validate(offerID,
+			validation.Required,
+			is.UUID,
+		); err != nil {
+			_ = c.AbortWithError(http.StatusUnprocessableEntity, err)
+
+			return
+		}
+
+		err := d.DeleteByID(c.Request.Context(), offerID)
 		if err != nil {
 			_ = c.AbortWithError(http.StatusInternalServerError, err)
 
@@ -119,7 +133,18 @@ func update(u storage.UpdateOffer) gin.HandlerFunc {
 			return
 		}
 
-		resp, err := u.Update(c.Request.Context(), c.Param("offerID"), &request)
+		offerID := c.Param("offerID")
+
+		if err := validation.Validate(offerID,
+			validation.Required,
+			is.UUID,
+		); err != nil {
+			_ = c.AbortWithError(http.StatusUnprocessableEntity, err)
+
+			return
+		}
+
+		resp, err := u.Update(c.Request.Context(), offerID, &request)
 		if err != nil {
 			_ = c.AbortWithError(http.StatusInternalServerError, err)
 
@@ -134,7 +159,18 @@ func getByID(g storage.GetOffer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer c.Header("Content-Type", "application/json")
 
-		resp, err := g.Get(c.Request.Context(), c.Param("offerID"))
+		offerID := c.Param("offerID")
+
+		if err := validation.Validate(offerID,
+			validation.Required,
+			is.UUID,
+		); err != nil {
+			_ = c.AbortWithError(http.StatusUnprocessableEntity, err)
+
+			return
+		}
+
+		resp, err := g.Get(c.Request.Context(), offerID)
 		if err != nil {
 			_ = c.AbortWithError(http.StatusInternalServerError, err)
 

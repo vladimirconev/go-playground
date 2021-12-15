@@ -7,6 +7,7 @@ Simple CRUD app for <b> job offers</b> written in Go to explore the language and
 - Logger https://github.com/uber-go/zap
 - Web https://github.com/gin-gonic/gin
 - CLI https://github.com/urfave/cli/v2
+- Validations https://github.com/go-ozzo/ozzo-validation/v4
 
 Storing data in PostgreSQL v11.
 
