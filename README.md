@@ -17,8 +17,8 @@ Make sure your PostgreSQL instance is up and running.
 To create table in your preferred db  just copy content of https://github.com/vladimirconev/go-playground/blob/main/setup_table.sql and execute. <br/>
 
 <h3> Starting server </h3>
-Start server on default port 3456 by invoking:
-`go run cmd/main.go server`. <br/>
+
+Start server on default port `3456` by invoking `go run cmd/main.go server` .
 
 To override any of already pre-set variables:
 - server port 8888 `go run cmd/main.go server --server-port "8888"`
