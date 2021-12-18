@@ -27,3 +27,8 @@ type UpdateJobOfferRequest struct {
 	ContactPhone string  `json:"phone"`
 	LinkToOffer  string  `json:"link"`
 }
+
+type JobOffersPaginationResponse struct {
+	TotalCount int64              `json:"total_count"`
+	Data       []JobOfferResponse `json:"data"`
+}

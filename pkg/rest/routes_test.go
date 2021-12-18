@@ -33,7 +33,7 @@ func TestRoutes(t *testing.T) {
 
 	assert.Equal(t, map[string][]string{
 		"/ping":            {"GET"},
-		"/offers":          {"POST"},
+		"/offers":          {"GET", "POST"},
 		"/offers/:offerID": {"GET", "PUT", "DELETE"},
 	}, routes)
 

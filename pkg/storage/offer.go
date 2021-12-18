@@ -36,6 +36,10 @@ type GetOffer interface {
 	Get(context.Context, string) (*api.JobOfferResponse, error)
 }
 
+type GetAllOffers interface {
+	GetAll(context.Context, int, int, string) (*api.JobOffersPaginationResponse, error)
+}
+
 type UpdateOffer interface {
 	Update(context.Context, string, *api.UpdateJobOfferRequest) (*api.JobOfferResponse, error)
 }
@@ -46,6 +50,54 @@ type DeleteOffer interface {
 
 type dbService struct {
 	db *gorm.DB
+}
+
+func (s *dbService) GetAll(ctx context.Context, size, offset int, sortBy string) (*api.JobOffersPaginationResponse, error) {
+	var totalCount int64
+	var offer jobOffer
+
+	if err := s.db.WithContext(ctx).
+		Model(&offer).
+		Count(&totalCount).
+		Error; err != nil {
+
+		return nil, err
+	}
+
+	var offers []jobOffer
+
+	if err := s.db.WithContext(ctx).
+		Offset(offset).
+		Limit(size).
+		Order(sortBy).
+		Find(&offers).
+		Error; err != nil {
+
+		return nil, err
+	}
+
+	data := make([]api.JobOfferResponse, 0)
+
+	for _, o := range offers {
+		if o.ID > 0 {
+			jobOfferResponse := api.JobOfferResponse{
+				ID:             o.UUID.String(),
+				Company:        o.Company,
+				Email:          o.Email,
+				ExpirationDate: o.ExpirationDate.ValueOrZero(),
+				LinkToOffer:    o.LinkToOffer.ValueOrZero(),
+				Details:        o.Details.ValueOrZero(),
+				Salary:         o.Salary,
+				ContactPhone:   o.Phone,
+			}
+			data = append(data, jobOfferResponse)
+		}
+	}
+
+	return &api.JobOffersPaginationResponse{
+		TotalCount: totalCount,
+		Data:       data,
+	}, nil
 }
 
 func (s *dbService) Create(ctx context.Context, req *api.JobOfferRequest) (*api.JobOfferResponse, error) {
@@ -144,3 +196,5 @@ func NewUpdateOfferService(db *gorm.DB) UpdateOffer { return &dbService{db: db} 
 func NewGetOfferService(db *gorm.DB) GetOffer { return &dbService{db: db} }
 
 func NewDeleteOfferService(db *gorm.DB) DeleteOffer { return &dbService{db: db} }
+
+func NewGetAllOffersService(db *gorm.DB) GetAllOffers { return &dbService{db: db} }

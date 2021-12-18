@@ -34,10 +34,11 @@ var server = cli.Command{
 		}
 
 		r := rest.SetupRouteHandlers(&rest.RouteHandlers{
-			CreateOffer: storage.NewCreateOfferService(db),
-			UpdateOffer: storage.NewUpdateOfferService(db),
-			GetOffer:    storage.NewGetOfferService(db),
-			DeleteOffer: storage.NewDeleteOfferService(db),
+			CreateOffer:  storage.NewCreateOfferService(db),
+			UpdateOffer:  storage.NewUpdateOfferService(db),
+			GetOffer:     storage.NewGetOfferService(db),
+			DeleteOffer:  storage.NewDeleteOfferService(db),
+			GetAllOffers: storage.NewGetAllOffersService(db),
 		}, lg)
 
 		return r.Run(fmt.Sprintf(":%s", c.String("server-port")))

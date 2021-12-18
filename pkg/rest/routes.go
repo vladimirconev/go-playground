@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"net/http"
+	"strconv"
 
 	"example.com/playground/pkg/api"
 	"example.com/playground/pkg/storage"
@@ -51,10 +52,11 @@ func loggingMiddleware(lg *zap.SugaredLogger) gin.HandlerFunc {
 }
 
 type RouteHandlers struct {
-	CreateOffer storage.CreateOffer
-	UpdateOffer storage.UpdateOffer
-	GetOffer    storage.GetOffer
-	DeleteOffer storage.DeleteOffer
+	CreateOffer  storage.CreateOffer
+	UpdateOffer  storage.UpdateOffer
+	GetOffer     storage.GetOffer
+	GetAllOffers storage.GetAllOffers
+	DeleteOffer  storage.DeleteOffer
 }
 
 func (r *RouteHandlers) routes(e *gin.Engine) *gin.Engine {
@@ -66,11 +68,45 @@ func (r *RouteHandlers) routes(e *gin.Engine) *gin.Engine {
 	})
 
 	e.POST("/offers", create(r.CreateOffer))
+	e.GET("/offers", getAll(r.GetAllOffers))
 	e.PUT("/offers/:offerID", update(r.UpdateOffer))
 	e.GET("/offers/:offerID", getByID(r.GetOffer))
 	e.DELETE("/offers/:offerID", delete(r.DeleteOffer))
 
 	return e
+}
+
+func getAll(g storage.GetAllOffers) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		defer c.Header("Content-Type", "application/json")
+
+		size := c.DefaultQuery("size", "2")
+		offset := c.DefaultQuery("offset", "0")
+		sortBy := c.DefaultQuery("sortBy", "company")
+
+		sizeInt, err := strconv.Atoi(size)
+		if err != nil {
+			_ = c.AbortWithError(http.StatusInternalServerError, err)
+
+			return
+		}
+
+		offsetInt, err := strconv.Atoi(offset)
+		if err != nil {
+			_ = c.AbortWithError(http.StatusInternalServerError, err)
+
+			return
+		}
+
+		resp, err := g.GetAll(c.Request.Context(), sizeInt, offsetInt, sortBy)
+		if err != nil {
+			_ = c.AbortWithError(http.StatusInternalServerError, err)
+
+			return
+		}
+
+		c.JSON(http.StatusOK, resp)
+	}
 }
 
 func delete(d storage.DeleteOffer) gin.HandlerFunc {
