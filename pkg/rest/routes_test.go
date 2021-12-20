@@ -301,3 +301,64 @@ func TestGetOfferByID(t *testing.T) {
 		})
 	}
 }
+
+type testGetAllOffers struct {
+	getAllOffersCalled int
+	getAllOffersErr    error
+	paginationResponse *api.JobOffersPaginationResponse
+}
+
+func (t *testGetAllOffers) GetAll(ctx context.Context, size, offset int, sortBy string) (*api.JobOffersPaginationResponse, error) {
+	t.getAllOffersCalled++
+	return t.paginationResponse, t.getAllOffersErr
+
+}
+
+func TestGetAllOffers(t *testing.T) {
+
+	tests := []struct {
+		size           string
+		offset         string
+		sortBy         string
+		expectedCalls  int
+		expectedStatus int
+		expectedErr    error
+	}{
+		{
+			"3",
+			"0",
+			"id",
+			1,
+			http.StatusOK,
+			nil,
+		},
+		{
+			"3",
+			"0",
+			"company",
+			1,
+			http.StatusInternalServerError,
+			errors.New("oops..something went wrong"),
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(fmt.Sprintf("%v", test), func(t *testing.T) {
+			w := httptest.NewRecorder()
+
+			g := testGetAllOffers{
+				getAllOffersErr: test.expectedErr,
+			}
+
+			ctx, _ := gin.CreateTestContext(w)
+
+			ctx.Request = httptest.NewRequest("GET", fmt.Sprintf("/offers?size=%s&offset=%s&sortBy=%s", test.size, test.offset, test.sortBy), nil)
+
+			getAll(&g)(ctx)
+
+			assert.Equal(t, test.expectedStatus, ctx.Writer.Status())
+			assert.Equal(t, test.expectedCalls, g.getAllOffersCalled)
+		})
+	}
+
+}

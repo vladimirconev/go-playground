@@ -97,6 +97,38 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get All Job Offers as Pages",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3456/offers?size=4&offset=10&sortBy=id",
+					"host": [
+						"localhost"
+					],
+					"port": "3456",
+					"path": [
+						"offers"
+					],
+					"query": [
+						{
+							"key": "size",
+							"value": "4"
+						},
+						{
+							"key": "offset",
+							"value": "10"
+						},
+						{
+							"key": "sortBy",
+							"value": "id"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
