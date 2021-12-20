@@ -84,16 +84,22 @@ func getAll(g storage.GetAllOffers) gin.HandlerFunc {
 		offset := c.DefaultQuery("offset", "0")
 		sortBy := c.DefaultQuery("sortBy", "company")
 
+		if err := validation.Validate(sortBy, validation.In("uuid", "id", "company", "email", "details", "salary", "phone")); err != nil {
+			_ = c.AbortWithError(http.StatusBadRequest, err)
+
+			return
+		}
+
 		sizeInt, err := strconv.Atoi(size)
 		if err != nil {
-			_ = c.AbortWithError(http.StatusInternalServerError, err)
+			_ = c.AbortWithError(http.StatusBadRequest, err)
 
 			return
 		}
 
 		offsetInt, err := strconv.Atoi(offset)
 		if err != nil {
-			_ = c.AbortWithError(http.StatusInternalServerError, err)
+			_ = c.AbortWithError(http.StatusBadRequest, err)
 
 			return
 		}
@@ -147,6 +153,12 @@ func create(cr storage.CreateOffer) gin.HandlerFunc {
 			return
 		}
 
+		if err := request.Validate(); err != nil {
+			_ = c.AbortWithError(http.StatusBadRequest, err)
+
+			return
+		}
+
 		resp, err := cr.Create(c.Request.Context(), &request)
 		if err != nil {
 			_ = c.AbortWithError(http.StatusInternalServerError, err)
@@ -169,13 +181,19 @@ func update(u storage.UpdateOffer) gin.HandlerFunc {
 			return
 		}
 
+		if err := request.Validate(); err != nil {
+			_ = c.AbortWithError(http.StatusBadRequest, err)
+
+			return
+		}
+
 		offerID := c.Param("offerID")
 
 		if err := validation.Validate(offerID,
 			validation.Required,
 			is.UUID,
 		); err != nil {
-			_ = c.AbortWithError(http.StatusUnprocessableEntity, err)
+			_ = c.AbortWithError(http.StatusBadRequest, err)
 
 			return
 		}

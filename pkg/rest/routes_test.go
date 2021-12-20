@@ -147,10 +147,45 @@ func TestCreateOffer(t *testing.T) {
 			nil,
 		},
 		{
-			&api.JobOfferRequest{},
+			&api.JobOfferRequest{
+				Company:        "TEST",
+				Email:          "test@hr-test.com",
+				ExpirationDate: "2022-03-01 14:30:00.00000",
+				LinkToOffer:    "http://test.com/carriers",
+				Details:        "We are looking for a Ninja Golang developer to work on our system serving...",
+				Salary:         18000,
+				ContactPhone:   "+38978653534",
+			},
 			1,
 			http.StatusInternalServerError,
 			errors.New("oops..something went wrong"),
+		},
+		{
+			&api.JobOfferRequest{
+				Email:          "test@hr-test.com",
+				ExpirationDate: "2022-03-01 14:30:00.00000",
+				LinkToOffer:    "http://test.com/carriers",
+				Details:        "We are looking for a Ninja Golang developer to work on our system serving...",
+				Salary:         18000,
+				ContactPhone:   "+38978653534",
+			},
+			0,
+			http.StatusBadRequest,
+			nil,
+		},
+		{
+			&api.JobOfferRequest{
+				Company:        "TEST_test",
+				Email:          "test@hr-test.com",
+				ExpirationDate: "2022-03-01 14:30:00.00000",
+				LinkToOffer:    "http://test.com/carriers",
+				Details:        "We are looking for a Ninja Golang developer to work on our system serving...",
+				Salary:         18000,
+				ContactPhone:   "078653534",
+			},
+			0,
+			http.StatusBadRequest,
+			nil,
 		},
 	}
 
@@ -210,10 +245,39 @@ func TestUpdateOffer(t *testing.T) {
 		},
 		{
 			"eca51142-3bf0-4766-baf7-2a168c964024",
-			&api.UpdateJobOfferRequest{},
+			&api.UpdateJobOfferRequest{
+				Salary:       8500,
+				Email:        "hey@outlook.com",
+				ContactPhone: "+38978360298",
+				LinkToOffer:  "http://test.com/carrers",
+			},
 			1,
 			http.StatusInternalServerError,
 			errors.New("oops..something went wrong"),
+		},
+		{
+			"eca51142-3bf0-4766-baf7-2a168c964024",
+			&api.UpdateJobOfferRequest{
+
+				Email:        "hey@outlook.com",
+				ContactPhone: "+38978360298",
+				LinkToOffer:  "http://test.com/carrers",
+			},
+			0,
+			http.StatusBadRequest,
+			nil,
+		},
+		{
+			"eca51142-3bf0-4766-baf7-2a168c9640",
+			&api.UpdateJobOfferRequest{
+				Salary:       8500,
+				Email:        "hey@outlook.com",
+				ContactPhone: "+38978360298",
+				LinkToOffer:  "http://test.com/carrers",
+			},
+			0,
+			http.StatusBadRequest,
+			nil,
 		},
 	}
 
@@ -339,6 +403,30 @@ func TestGetAllOffers(t *testing.T) {
 			1,
 			http.StatusInternalServerError,
 			errors.New("oops..something went wrong"),
+		},
+		{
+			"test",
+			"0",
+			"company",
+			0,
+			http.StatusBadRequest,
+			nil,
+		},
+		{
+			"2",
+			"test",
+			"company",
+			0,
+			http.StatusBadRequest,
+			nil,
+		},
+		{
+			"2",
+			"1",
+			"test",
+			0,
+			http.StatusBadRequest,
+			nil,
 		},
 	}
 

@@ -1,5 +1,10 @@
 package api
 
+import (
+	"github.com/go-ozzo/ozzo-validation/is"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+)
+
 type JobOfferRequest struct {
 	Company        string  `json:"company"`
 	Email          string  `json:"email"`
@@ -8,6 +13,17 @@ type JobOfferRequest struct {
 	Details        string  `json:"details"`
 	Salary         float64 `json:"salary"`
 	ContactPhone   string  `json:"phone"`
+}
+
+func (req JobOfferRequest) Validate() error {
+	return validation.ValidateStruct(&req,
+		validation.Field(&req.Company, validation.Required),
+		validation.Field(&req.Email, validation.Required, is.Email),
+		validation.Field(&req.Details, validation.Required),
+		validation.Field(&req.Salary, validation.Required),
+		validation.Field(&req.LinkToOffer, validation.Required, is.URL),
+		validation.Field(&req.ContactPhone, validation.Required, is.E164),
+	)
 }
 
 type JobOfferResponse struct {
@@ -26,6 +42,15 @@ type UpdateJobOfferRequest struct {
 	Email        string  `json:"email"`
 	ContactPhone string  `json:"phone"`
 	LinkToOffer  string  `json:"link"`
+}
+
+func (req UpdateJobOfferRequest) Validate() error {
+	return validation.ValidateStruct(&req,
+		validation.Field(&req.Email, validation.Required, is.Email),
+		validation.Field(&req.Salary, validation.Required),
+		validation.Field(&req.LinkToOffer, validation.Required, is.URL),
+		validation.Field(&req.ContactPhone, validation.Required, is.E164),
+	)
 }
 
 type JobOffersPaginationResponse struct {
