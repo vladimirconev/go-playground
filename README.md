@@ -17,6 +17,7 @@ Project layout https://github.com/golang-standards/project-layout
 Make sure your PostgreSQL instance is up and running. 
 To create table in your preferred db  just copy content of https://github.com/vladimirconev/go-playground/blob/main/init.sql and execute. <br/>
 
+
 The second option is via docker compose: `docker compose -f .\docker-compose.yml up --build -d` <br/>
 
 `docker compose -f .\docker-compose.yml down` to shut it down.  
