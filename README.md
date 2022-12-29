@@ -9,13 +9,17 @@ Simple CRUD app for <b> job offers</b> written in Go to explore the language and
 - CLI https://github.com/urfave/cli/v2
 - Validations https://github.com/go-ozzo/ozzo-validation/v4
 
-Storing data in PostgreSQL v11.
+Storing data in PostgreSQL v11+.
 
 Project layout https://github.com/golang-standards/project-layout
 
 <h3>First Run</h3>
 Make sure your PostgreSQL instance is up and running. 
-To create table in your preferred db  just copy content of https://github.com/vladimirconev/go-playground/blob/main/setup_table.sql and execute. <br/>
+To create table in your preferred db  just copy content of https://github.com/vladimirconev/go-playground/blob/main/init.sql and execute. <br/>
+
+The second option is via docker compose: `docker compose -f .\docker-compose.yml up --build -d` <br/>
+`docker compose -f .\docker-compose.yml down` to shut it down.  
+
 
 <h3> Starting server </h3>
 
