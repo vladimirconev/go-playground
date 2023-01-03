@@ -36,3 +36,5 @@ Under `/docs` folder there is a Postman collection ready to be imported and star
 Running tests `go test ./... -short`.
 
 Happy Coding!!!
+
+P.S. By simply running `docker compose -f .\docker-compose.yml up --build -d` the app will be started on port <b>3456</b> and DB will be running on port <b>5432</b> so you can import Postman collection from `/docs` folder and start exploring. 
